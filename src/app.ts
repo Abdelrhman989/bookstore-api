@@ -1,5 +1,9 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import authRoutes from './routes/auth.routes';
+import { notFound } from './middlewares/notFound';
+import { errorHandler } from './middlewares/errorHandler';
 import connectDB from './config/db';
 
 dotenv.config();
@@ -7,17 +11,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
 app.use(express.json());
 
-// Test route
-app.get('/', (_req, res) => {
-  res.send('📚 Welcome to the Bookstore API!');
-});
+app.use('/api/auth', authRoutes);
+app.use(notFound);
+app.use(errorHandler);
 
-// Connect to DB and Start Server
 connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-  });
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 });
