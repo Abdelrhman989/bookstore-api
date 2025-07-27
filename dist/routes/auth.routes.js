@@ -5,12 +5,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const auth_controller_1 = require("../controllers/auth.controller");
-const validateRequest_1 = __importDefault(require("../middlewares/validateRequest"));
+const validateRequest_middleware_1 = __importDefault(require("../middlewares/validateRequest.middleware"));
 const auth_validation_1 = require("../validations/auth.validation");
 const auth_middleware_1 = require("../middlewares/auth.middleware");
 const router = (0, express_1.Router)();
-router.post('/register', (0, validateRequest_1.default)(auth_validation_1.registerSchema), auth_controller_1.register);
-router.post('/login', (0, validateRequest_1.default)(auth_validation_1.loginSchema), auth_controller_1.login);
+router.post('/register', (0, validateRequest_middleware_1.default)(auth_validation_1.registerSchema), auth_controller_1.register);
+router.post('/login', (0, validateRequest_middleware_1.default)(auth_validation_1.loginSchema), auth_controller_1.login);
 // Example of a protected route
 router.get('/me', auth_middleware_1.protect, (req, res) => {
     res.status(200).json({ message: 'Welcome to your profile', user: req.user });

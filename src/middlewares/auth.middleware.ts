@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
 import { User } from '../models/user.model';
-import { catchAsync } from './catchAsync';
+import { catchAsync } from './catchAsync.middleware';
 
 declare global {
   namespace Express {

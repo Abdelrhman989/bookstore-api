@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { catchAsync } from '../middlewares/catchAsync';
+import { catchAsync } from '../middlewares/catchAsync.middleware';
 import { hashPassword, comparePassword } from '../utils/bcrypt';
 import { generateToken } from '../utils/jwt';
 import { User } from '../models/user.model';

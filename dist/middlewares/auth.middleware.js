@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authorize = exports.protect = void 0;
 const jwt_1 = require("../utils/jwt");
 const user_model_1 = require("../models/user.model");
-const catchAsync_1 = require("./catchAsync");
-exports.protect = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+const catchAsync_middleware_1 = require("./catchAsync.middleware");
+exports.protect = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
         token = req.headers.authorization.split(' ')[1];

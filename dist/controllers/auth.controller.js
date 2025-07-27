@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.register = void 0;
-const catchAsync_1 = require("../middlewares/catchAsync");
+const catchAsync_middleware_1 = require("../middlewares/catchAsync.middleware");
 const bcrypt_1 = require("../utils/bcrypt");
 const jwt_1 = require("../utils/jwt");
 const user_model_1 = require("../models/user.model");
-exports.register = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+exports.register = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
     const { name, email, password, role } = req.body;
     const userExists = await user_model_1.User.findOne({ email });
     if (userExists) {
@@ -25,7 +25,7 @@ exports.register = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
         token,
     });
 });
-exports.login = (0, catchAsync_1.catchAsync)(async (req, res, next) => {
+exports.login = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
     const { email, password } = req.body;
     const user = await user_model_1.User.findOne({ email }).select('+password');
     if (!user || !(await (0, bcrypt_1.comparePassword)(password, user.password))) {
