@@ -1,12 +1,33 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteCategory = exports.updateCategory = exports.createCategory = exports.getCategory = exports.getCategories = void 0;
 const catchAsync_middleware_1 = require("../middlewares/catchAsync.middleware");
 const category_model_1 = require("../models/category.model");
-// Get all categories
+const apiFeatures_1 = __importDefault(require("../utils/apiFeatures"));
+// Get all categories with filtering, sorting, pagination
 exports.getCategories = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
-    const categories = await category_model_1.Category.find();
-    res.status(200).json({ success: true, count: categories.length, data: categories });
+    // Create features instance
+    const features = new apiFeatures_1.default(category_model_1.Category.find(), req.query)
+        .search()
+        .filter()
+        .sort()
+        .limitFields()
+        .paginate();
+    // Execute query
+    const categories = await features.query;
+    // Get total count for pagination info
+    const totalCategories = await category_model_1.Category.countDocuments();
+    res.status(200).json({
+        success: true,
+        count: categories.length,
+        totalCategories,
+        totalPages: Math.ceil(totalCategories / (parseInt(req.query.limit, 10) || 10)),
+        currentPage: parseInt(req.query.page, 10) || 1,
+        data: categories
+    });
 });
 // Get single category
 exports.getCategory = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
