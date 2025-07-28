@@ -2,11 +2,32 @@ import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../middlewares/catchAsync.middleware';
 import { Book } from '../models/book.model';
 import { Category } from '../models/category.model';
+import APIFeatures from '../utils/apiFeatures';
 
-// Get all books
+// Get all books with filtering, sorting, pagination
 export const getBooks = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const books = await Book.find().populate('category', 'name slug');
-  res.status(200).json({ success: true, count: books.length, data: books });
+  // Create features instance
+  const features = new APIFeatures(Book.find(), req.query)
+    .search()
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  // Execute query
+  const books = await features.query.populate('category', 'name slug');
+  
+  // Get total count for pagination info
+  const totalBooks = await Book.countDocuments();
+  
+  res.status(200).json({
+    success: true,
+    count: books.length,
+    totalBooks,
+    totalPages: Math.ceil(totalBooks / (parseInt(req.query.limit as string, 10) || 10)),
+    currentPage: parseInt(req.query.page as string, 10) || 1,
+    data: books
+  });
 });
 
 // Get single book
@@ -93,7 +114,26 @@ export const getBooksByCategory = catchAsync(async (req: Request, res: Response,
     return;
   }
   
-  const books = await Book.find({ category: req.params.categoryId }).populate('category', 'name slug');
+  // Create features instance with category filter
+  const features = new APIFeatures(Book.find({ category: req.params.categoryId }), req.query)
+    .search()
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  // Execute query
+  const books = await features.query.populate('category', 'name slug');
   
-  res.status(200).json({ success: true, count: books.length, data: books });
+  // Get total count for pagination info
+  const totalBooks = await Book.countDocuments({ category: req.params.categoryId });
+  
+  res.status(200).json({
+    success: true,
+    count: books.length,
+    totalBooks,
+    totalPages: Math.ceil(totalBooks / (parseInt(req.query.limit as string, 10) || 10)),
+    currentPage: parseInt(req.query.page as string, 10) || 1,
+    data: books
+  });
 });

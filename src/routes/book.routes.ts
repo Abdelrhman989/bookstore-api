@@ -8,8 +8,8 @@ const router = Router();
 
 // Public routes
 router.get('/', getBooks);
-router.get('/:id', getBook);
 router.get('/category/:categoryId', getBooksByCategory);
+router.get('/:id', getBook);
 
 // Protected routes (admin only)
 router.post('/', protect, authorize('admin'), validateRequest(createBookSchema), createBook);

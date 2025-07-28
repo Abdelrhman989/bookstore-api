@@ -7,6 +7,7 @@ import categoryRoutes from './routes/category.routes';
 import { notFound } from './middlewares/notFound.middleware';
 import { errorHandler } from './middlewares/errorHandler.middleware';
 import connectDB from './config/db';
+import swaggerDocs from './utils/swagger';
 
 dotenv.config();
 
@@ -18,9 +19,16 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/categories', categoryRoutes);
+
+// Swagger documentation
+swaggerDocs(app);
+
 app.use(notFound);
 app.use(errorHandler);
 
 connectDB().then(() => {
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Swagger docs available at http://localhost:${PORT}/api-docs`);
+  });
 });

@@ -1,11 +1,32 @@
 import { Request, Response, NextFunction } from 'express';
 import { catchAsync } from '../middlewares/catchAsync.middleware';
 import { Category } from '../models/category.model';
+import APIFeatures from '../utils/apiFeatures';
 
-// Get all categories
+// Get all categories with filtering, sorting, pagination
 export const getCategories = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-  const categories = await Category.find();
-  res.status(200).json({ success: true, count: categories.length, data: categories });
+  // Create features instance
+  const features = new APIFeatures(Category.find(), req.query)
+    .search()
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+
+  // Execute query
+  const categories = await features.query;
+  
+  // Get total count for pagination info
+  const totalCategories = await Category.countDocuments();
+  
+  res.status(200).json({
+    success: true,
+    count: categories.length,
+    totalCategories,
+    totalPages: Math.ceil(totalCategories / (parseInt(req.query.limit as string, 10) || 10)),
+    currentPage: parseInt(req.query.page as string, 10) || 1,
+    data: categories
+  });
 });
 
 // Get single category
