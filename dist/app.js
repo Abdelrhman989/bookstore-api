@@ -8,6 +8,8 @@ const dotenv_1 = __importDefault(require("dotenv"));
 const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
 const book_routes_1 = __importDefault(require("./routes/book.routes"));
 const category_routes_1 = __importDefault(require("./routes/category.routes"));
+const order_routes_1 = __importDefault(require("./routes/order.routes"));
+const cart_routes_1 = __importDefault(require("./routes/cart.routes"));
 const notFound_middleware_1 = require("./middlewares/notFound.middleware");
 const errorHandler_middleware_1 = require("./middlewares/errorHandler.middleware");
 const db_1 = __importDefault(require("./config/db"));
@@ -19,6 +21,8 @@ app.use(express_1.default.json());
 app.use('/api/auth', auth_routes_1.default);
 app.use('/api/books', book_routes_1.default);
 app.use('/api/categories', category_routes_1.default);
+app.use('/api/orders', order_routes_1.default);
+app.use('/api/cart', cart_routes_1.default);
 // Swagger documentation
 (0, swagger_1.default)(app);
 app.use(notFound_middleware_1.notFound);
