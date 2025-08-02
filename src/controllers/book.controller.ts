@@ -163,3 +163,46 @@ export const deleteBook = catchAsync(
 //     data: books
 //   });
 // });
+
+// Get books with low stock
+export const getLowStockBooks = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const threshold = parseInt(req.query.threshold as string, 10) || 5;
+    const books = await Book.find({ stock: { $lt: threshold } });
+    res.status(200).json({ success: true, count: books.length, data: books });
+  }
+);
+
+// Update stock for a book
+export const updateBookStock = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { stock } = req.body;
+    const book = await Book.findByIdAndUpdate(
+      req.params.id,
+      { stock },
+      { new: true, runValidators: true }
+    );
+    if (!book) {
+      res.status(404).json({ success: false, message: "Book not found" });
+      return;
+    }
+    res.status(200).json({ success: true, data: book });
+  }
+);
+
+// Bulk update stock for multiple books
+export const bulkUpdateBookStock = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const updates = req.body.updates; // [{ id, stock }, ...]
+    if (!Array.isArray(updates) || updates.length === 0) {
+      return res.status(400).json({ success: false, message: "No updates provided" });
+    }
+    const results = [];
+    for (const update of updates) {
+      if (!update.id || typeof update.stock !== "number") continue;
+      const book = await Book.findByIdAndUpdate(update.id, { stock: update.stock }, { new: true, runValidators: true });
+      if (book) results.push(book);
+    }
+    res.status(200).json({ success: true, count: results.length, data: results });
+  }
+);

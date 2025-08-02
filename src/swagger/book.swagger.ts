@@ -374,4 +374,140 @@
  *                     $ref: '#/components/schemas/Book'
  *       404:
  *         description: Category not found
+ *
+ * /api/books/low-stock:
+ *   get:
+ *     tags:
+ *       - Books
+ *     summary: Get all books with stock below a threshold
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: threshold
+ *         schema:
+ *           type: integer
+ *           default: 5
+ *         description: Stock threshold (default is 5)
+ *     responses:
+ *       200:
+ *         description: List of low stock books
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Book'
+ *       401:
+ *         description: Not authorized, no token or invalid token
+ *       403:
+ *         description: Forbidden, not an admin
+ *
+ * /api/books/{id}/stock:
+ *   patch:
+ *     tags:
+ *       - Books
+ *     summary: Update the stock of a book (admin only)
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - stock
+ *             properties:
+ *               stock:
+ *                 type: integer
+ *                 minimum: 0
+ *     responses:
+ *       200:
+ *         description: Book stock updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/Book'
+ *       400:
+ *         description: Validation error
+ *       401:
+ *         description: Not authorized, no token or invalid token
+ *       403:
+ *         description: Forbidden, not an admin
+ *       404:
+ *         description: Book not found
+ *
+ * /api/books/bulk/stock:
+ *   patch:
+ *     summary: Bulk update stock for multiple books
+ *     tags:
+ *       - Books
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               updates:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     bookId:
+ *                       type: string
+ *                       description: The ID of the book
+ *                     stock:
+ *                       type: integer
+ *                       minimum: 0
+ *                       description: The new stock value
+ *                 example:
+ *                   - bookId: "60c72b2f9b1e8e001c8e4b8a"
+ *                     stock: 15
+ *                   - bookId: "60c72b2f9b1e8e001c8e4b8b"
+ *                     stock: 8
+ *     responses:
+ *       200:
+ *         description: Bulk stock update successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 updatedBooks:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Book'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Forbidden
+ *       500:
+ *         description: Internal server error
  */

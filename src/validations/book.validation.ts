@@ -36,3 +36,14 @@ export const updateBookSchema = z.object({
     }).optional(),
   }),
 });
+
+export const bulkUpdateBookStockSchema = z.object({
+  body: z.object({
+    updates: z.array(
+      z.object({
+        id: z.string().min(1, 'Book ID is required'),
+        stock: z.number().int().nonnegative('Stock must be a non-negative integer'),
+      })
+    ).min(1, 'At least one update is required'),
+  }),
+});
