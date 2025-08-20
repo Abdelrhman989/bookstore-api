@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { Order } from "../models/order.model";
 import { Book } from "../models/book.model";
+import Cart from "../models/cart.model";
 import { catchAsync } from "../middlewares/catchAsync.middleware";
 
 // Create a new order
@@ -22,10 +23,26 @@ export const createOrder = catchAsync(async (req: Request, res: Response, next: 
   }
   // Create order
   const order = await Order.create({
-    user: req.user._id, // يجب أن يكون لديك ميدل وير يضيف user للـ req
+    user: req.user._id, // You must have middleware that adds user to req
     items,
     totalPrice,
   });
+  
+  // Add the order items to the user's cart
+  // This ensures that the ordered items are added to the cart
+  const cart = await Cart.findOne({ user: req.user._id });
+  if (cart) {
+    // Add order items to cart
+    cart.items = [...items];
+    await cart.save();
+  } else {
+    // Create a new cart with the order items if it doesn't exist
+    await Cart.create({
+      user: req.user._id,
+      items: [...items]
+    });
+  }
+  
   res.status(201).json({ success: true, data: order });
 });
 
@@ -41,7 +58,7 @@ export const getOrder = catchAsync(async (req: Request, res: Response, next: Nex
   if (!order) {
     return res.status(404).json({ success: false, message: "Order not found" });
   }
-  // تحقق أن المستخدم هو صاحب الطلب أو أدمن
+  // Check that the user is the order owner or an admin
   if (order.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
     return res.status(403).json({ success: false, message: "Not authorized" });
   }

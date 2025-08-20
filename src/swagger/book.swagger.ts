@@ -92,6 +92,12 @@
  *           type: string
  *         description: Search term for title, author, description, publisher, or ISBN
  *       - in: query
+ *         name: advanced
+ *         schema:
+ *           type: string
+ *           enum: ['true', 'false']
+ *         description: Enable advanced search features
+ *       - in: query
  *         name: category
  *         schema:
  *           type: string
@@ -312,6 +318,120 @@
  *         description: Forbidden, not an admin
  *       404:
  *         description: Book not found
+ *
+ * /api/books/search/advanced:
+ *   get:
+ *     tags:
+ *       - Books
+ *     summary: Advanced search for books with multiple criteria
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *         description: Search by book title
+ *       - in: query
+ *         name: author
+ *         schema:
+ *           type: string
+ *         description: Search by book author
+ *       - in: query
+ *         name: publisher
+ *         schema:
+ *           type: string
+ *         description: Search by publisher name
+ *       - in: query
+ *         name: isbn
+ *         schema:
+ *           type: string
+ *         description: Search by ISBN
+ *       - in: query
+ *         name: minPrice
+ *         schema:
+ *           type: number
+ *         description: Minimum price filter
+ *       - in: query
+ *         name: maxPrice
+ *         schema:
+ *           type: number
+ *         description: Maximum price filter
+ *       - in: query
+ *         name: minStock
+ *         schema:
+ *           type: integer
+ *         description: Minimum stock filter
+ *       - in: query
+ *         name: maxStock
+ *         schema:
+ *           type: integer
+ *         description: Maximum stock filter
+ *       - in: query
+ *         name: publishedBefore
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Published before date (YYYY-MM-DD)
+ *       - in: query
+ *         name: publishedAfter
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Published after date (YYYY-MM-DD)
+ *       - in: query
+ *         name: exactMatch
+ *         schema:
+ *           type: string
+ *           enum: ['true', 'false']
+ *         description: Use exact matching instead of partial matching
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *         description: Filter by category ID
+ *       - in: query
+ *         name: sort
+ *         schema:
+ *           type: string
+ *         description: Sort field(s), comma-separated (prefix with - for descending order)
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: Page number for pagination
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: Number of items per page
+ *       - in: query
+ *         name: fields
+ *         schema:
+ *           type: string
+ *         description: Fields to include in the response, comma-separated
+ *     responses:
+ *       200:
+ *         description: List of books matching the advanced search criteria
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: integer
+ *                 totalBooks:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 currentPage:
+ *                   type: integer
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Book'
  *
  * /api/books/category/{categoryId}:
  *   get:

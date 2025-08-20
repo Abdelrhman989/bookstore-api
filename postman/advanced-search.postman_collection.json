@@ -1,0 +1,230 @@
+{
+  "info": {
+    "_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "name": "Bookstore API - Advanced Search",
+    "description": "Collection for testing the advanced search functionality of the Bookstore API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Basic Search",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books?search=javascript",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books"],
+          "query": [
+            {
+              "key": "search",
+              "value": "javascript"
+            }
+          ]
+        },
+        "description": "Basic search using the existing search functionality"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - By Title",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?title=javascript",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "title",
+              "value": "javascript"
+            }
+          ]
+        },
+        "description": "Search books by title using advanced search"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - By Author",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?author=robert",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "author",
+              "value": "robert"
+            }
+          ]
+        },
+        "description": "Search books by author using advanced search"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - Price Range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?minPrice=20&maxPrice=50",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "minPrice",
+              "value": "20"
+            },
+            {
+              "key": "maxPrice",
+              "value": "50"
+            }
+          ]
+        },
+        "description": "Search books within a price range"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - Date Range",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?publishedAfter=2020-01-01&publishedBefore=2022-12-31",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "publishedAfter",
+              "value": "2020-01-01"
+            },
+            {
+              "key": "publishedBefore",
+              "value": "2022-12-31"
+            }
+          ]
+        },
+        "description": "Search books published within a date range"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - Exact Match",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?title=JavaScript: The Good Parts&exactMatch=true",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "title",
+              "value": "JavaScript: The Good Parts"
+            },
+            {
+              "key": "exactMatch",
+              "value": "true"
+            }
+          ]
+        },
+        "description": "Search books with exact title match"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - Combined Criteria",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?author=martin&minPrice=30&publishedAfter=2018-01-01",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "author",
+              "value": "martin"
+            },
+            {
+              "key": "minPrice",
+              "value": "30"
+            },
+            {
+              "key": "publishedAfter",
+              "value": "2018-01-01"
+            }
+          ]
+        },
+        "description": "Search books using multiple criteria"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - With Pagination",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?publisher=oreilly&page=1&limit=5",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "publisher",
+              "value": "oreilly"
+            },
+            {
+              "key": "page",
+              "value": "1"
+            },
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        },
+        "description": "Search books with pagination"
+      },
+      "response": []
+    },
+    {
+      "name": "Advanced Search - With Sorting",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/api/books/search/advanced?minStock=10&sort=-price",
+          "host": ["{{baseUrl}}"],
+          "path": ["api", "books", "search", "advanced"],
+          "query": [
+            {
+              "key": "minStock",
+              "value": "10"
+            },
+            {
+              "key": "sort",
+              "value": "-price"
+            }
+          ]
+        },
+        "description": "Search books with sorting (price descending)"
+      },
+      "response": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    }
+  ]
+}

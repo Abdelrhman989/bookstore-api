@@ -12,6 +12,8 @@ const router = (0, express_1.Router)();
 // Public routes
 router.get("/", book_controller_1.getBooks);
 router.get("/:id", book_controller_1.getBook);
+router.get("/low-stock", auth_middleware_1.protect, (0, auth_middleware_1.authorize)("admin"), book_controller_1.getLowStockBooks);
+router.patch("/bulk/stock", auth_middleware_1.protect, (0, auth_middleware_1.authorize)('admin'), (0, validateRequest_middleware_1.default)(book_validation_1.bulkUpdateBookStockSchema), book_controller_1.bulkUpdateBookStock);
 // Protected routes (admin only)
 router.post("/", auth_middleware_1.protect, (0, auth_middleware_1.authorize)("admin"), (0, validateRequest_middleware_1.default)(book_validation_1.createBookSchema), book_controller_1.createBook);
 router.put("/:id", auth_middleware_1.protect, (0, auth_middleware_1.authorize)("admin"), (0, validateRequest_middleware_1.default)(book_validation_1.updateBookSchema), book_controller_1.updateBook);

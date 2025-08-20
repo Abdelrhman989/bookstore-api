@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBook = exports.updateBook = exports.createBook = exports.getBook = exports.getBooks = void 0;
+exports.bulkUpdateBookStock = exports.updateBookStock = exports.getLowStockBooks = exports.deleteBook = exports.updateBook = exports.createBook = exports.getBook = exports.getBooks = void 0;
 const catchAsync_middleware_1 = require("../middlewares/catchAsync.middleware");
 const book_model_1 = require("../models/book.model");
 const category_model_1 = require("../models/category.model");
@@ -124,3 +124,35 @@ exports.deleteBook = (0, catchAsync_middleware_1.catchAsync)(async (req, res, ne
 //     data: books
 //   });
 // });
+// Get books with low stock
+exports.getLowStockBooks = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
+    const threshold = parseInt(req.query.threshold, 10) || 5;
+    const books = await book_model_1.Book.find({ stock: { $lt: threshold } });
+    res.status(200).json({ success: true, count: books.length, data: books });
+});
+// Update stock for a book
+exports.updateBookStock = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
+    const { stock } = req.body;
+    const book = await book_model_1.Book.findByIdAndUpdate(req.params.id, { stock }, { new: true, runValidators: true });
+    if (!book) {
+        res.status(404).json({ success: false, message: "Book not found" });
+        return;
+    }
+    res.status(200).json({ success: true, data: book });
+});
+// Bulk update stock for multiple books
+exports.bulkUpdateBookStock = (0, catchAsync_middleware_1.catchAsync)(async (req, res, next) => {
+    const updates = req.body.updates; // [{ id, stock }, ...]
+    if (!Array.isArray(updates) || updates.length === 0) {
+        return res.status(400).json({ success: false, message: "No updates provided" });
+    }
+    const results = [];
+    for (const update of updates) {
+        if (!update.id || typeof update.stock !== "number")
+            continue;
+        const book = await book_model_1.Book.findByIdAndUpdate(update.id, { stock: update.stock }, { new: true, runValidators: true });
+        if (book)
+            results.push(book);
+    }
+    res.status(200).json({ success: true, count: results.length, data: results });
+});

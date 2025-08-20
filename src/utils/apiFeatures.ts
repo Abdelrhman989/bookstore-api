@@ -39,6 +39,92 @@ class APIFeatures<T extends Document> {
     return this;
   }
 
+  advancedSearch() {
+    const {
+      title,
+      author,
+      publisher,
+      isbn,
+      minPrice,
+      maxPrice,
+      minStock,
+      maxStock,
+      publishedBefore,
+      publishedAfter,
+      exactMatch
+    } = this.queryString;
+
+    const searchQuery: Record<string, any> = {};
+
+    // Function to create regex or exact match based on exactMatch flag
+    const createSearchPattern = (field: string, value: string) => {
+      if (exactMatch === 'true') {
+        return { [field]: value };
+      }
+      return { [field]: new RegExp(value, 'i') };
+    };
+
+    // Title search
+    if (title) {
+      Object.assign(searchQuery, createSearchPattern('title', title));
+    }
+
+    // Author search
+    if (author) {
+      Object.assign(searchQuery, createSearchPattern('author', author));
+    }
+
+    // Publisher search
+    if (publisher) {
+      Object.assign(searchQuery, createSearchPattern('publisher', publisher));
+    }
+
+    // ISBN search (usually exact)
+    if (isbn) {
+      Object.assign(searchQuery, { isbn: new RegExp(isbn, 'i') });
+    }
+
+    // Price range
+    if (minPrice !== undefined || maxPrice !== undefined) {
+      searchQuery.price = {};
+      if (minPrice !== undefined) {
+        searchQuery.price.$gte = Number(minPrice);
+      }
+      if (maxPrice !== undefined) {
+        searchQuery.price.$lte = Number(maxPrice);
+      }
+    }
+
+    // Stock range
+    if (minStock !== undefined || maxStock !== undefined) {
+      searchQuery.stock = {};
+      if (minStock !== undefined) {
+        searchQuery.stock.$gte = Number(minStock);
+      }
+      if (maxStock !== undefined) {
+        searchQuery.stock.$lte = Number(maxStock);
+      }
+    }
+
+    // Published date range
+    if (publishedBefore || publishedAfter) {
+      searchQuery.publishedDate = {};
+      if (publishedAfter) {
+        searchQuery.publishedDate.$gte = new Date(publishedAfter);
+      }
+      if (publishedBefore) {
+        searchQuery.publishedDate.$lte = new Date(publishedBefore);
+      }
+    }
+
+    // Apply the search query if it's not empty
+    if (Object.keys(searchQuery).length > 0) {
+      this.query = this.query.find(searchQuery);
+    }
+
+    return this;
+  }
+
   sort() {
     if (this.queryString.sort) {
       const sortBy = this.queryString.sort.split(',').join(' ');

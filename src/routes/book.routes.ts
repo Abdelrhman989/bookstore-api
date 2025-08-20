@@ -7,6 +7,7 @@ import {
   deleteBook,
   getLowStockBooks,
   bulkUpdateBookStock,
+  advancedSearchBooks,
 } from "../controllers/book.controller";
 import validateRequest from "../middlewares/validateRequest.middleware";
 import {
@@ -19,6 +20,7 @@ const router = Router();
 
 // Public routes
 router.get("/", getBooks);
+router.get("/search/advanced", advancedSearchBooks);
 router.get("/:id", getBook);
 router.get(
   "/low-stock",

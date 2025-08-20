@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateBookSchema = exports.createBookSchema = void 0;
+exports.bulkUpdateBookStockSchema = exports.updateBookSchema = exports.createBookSchema = void 0;
 const zod_1 = require("zod");
 exports.createBookSchema = zod_1.z.object({
     body: zod_1.z.object({
@@ -35,5 +35,13 @@ exports.updateBookSchema = zod_1.z.object({
         publishedDate: zod_1.z.string().refine((val) => !isNaN(Date.parse(val)), {
             message: 'Published date must be a valid date string',
         }).optional(),
+    }),
+});
+exports.bulkUpdateBookStockSchema = zod_1.z.object({
+    body: zod_1.z.object({
+        updates: zod_1.z.array(zod_1.z.object({
+            id: zod_1.z.string().min(1, 'Book ID is required'),
+            stock: zod_1.z.number().int().nonnegative('Stock must be a non-negative integer'),
+        })).min(1, 'At least one update is required'),
     }),
 });
