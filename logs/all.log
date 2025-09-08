@@ -1,0 +1,9 @@
+2025-08-20 13:44:07:447 [35mhttp[39m: [35mGET /api-docs/ 304 - - 10.564 ms[39m
+2025-08-20 13:44:07:447 [35mhttp[39m: [35mGET /api-docs/swagger-ui-standalone-preset.js 304 - - 3.127 ms[39m
+2025-08-20 13:44:07:447 [35mhttp[39m: [35mGET /api-docs/swagger-ui-bundle.js 304 - - 3.090 ms[39m
+2025-08-20 13:44:07:447 [35mhttp[39m: [35mGET /api-docs/swagger-ui-init.js 304 - - 0.865 ms[39m
+2025-08-20 13:44:07:447 [35mhttp[39m: [35mGET /api-docs/swagger-ui.css 304 - - 5.724 ms[39m
+2025-08-20 13:46:45:4645 [35mhttp[39m: [35mPOST /api/books/ 401 42 - 4.805 ms[39m
+2025-08-20 13:47:22:4722 [35mhttp[39m: [35mPOST /api/auth/login 200 340 - 104.173 ms[39m
+2025-08-20 13:47:38:4738 [35mhttp[39m: [35mPOST /api/books/ 400 64 - 14.907 ms[39m
+2025-08-20 13:48:14:4814 [35mhttp[39m: [35mPOST /api/orders 201 388 - 50.078 ms[39m
